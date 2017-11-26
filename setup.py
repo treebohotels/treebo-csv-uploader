@@ -3,7 +3,7 @@ import os
 
 from setuptools import find_packages, setup
 
-VERSION = (1, 0, 1)
+VERSION = (1, 0, 3)
 
 __version__ = ".".join(str(i) for i in VERSION)
 
@@ -27,6 +27,7 @@ setup(
     keywords="csv upload",
     url="https://github.com/TreeboHotels/treebo_csv_uploader",
     packages=find_packages(exclude=['tests', 'docs']),
+    package_data={'templates': ['templates/csv_uploader.html']},
     long_description=read('README.rst'),
     classifiers=[
         'Development Status :: 5 - Production/Stable',
