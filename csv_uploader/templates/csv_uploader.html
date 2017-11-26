@@ -1,0 +1,92 @@
+
+<html>
+<head>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script>
+    function get_csv_sample(name) {
+    const rows = {{ action_json|safe }};
+    var csvContent = "data:text/csv;charset=utf-8,";
+        csvContent+= rows[name];
+    var encodedUri = encodeURI(csvContent);
+    window.open(encodedUri);
+    }
+</script>
+</head>
+<body>
+    <div class="container jumbotron">
+        <div>
+            <h2 class="center">Bulk Upload Actions</h2>
+        </div>
+        <h4>Download Sample CSV:</h4>
+        {% for action in action_names %}
+            <a onclick="get_csv_sample('{{ action }}')">{{ action }} </a>
+            <br>
+        {% endfor %}
+        <div class="col-md-4 col-md-offset-4">
+            <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+              <div class="form-group center">
+                  Action: <select name="action_name" >
+                    {% for action in action_names %}
+                        <option value="{{action}}">{{action}}</option>
+                    {% endfor %}
+                </select>
+                  <input type="file" class="left-margin extra-margin-top" name="csv_file" id="csv_file_box" />
+                <input type="submit" class="btn btn-info margin-top" value="Upload And Mail" />
+              </div>
+            </form>
+        </div>
+
+
+
+        <div class="margin-top center clear error-features alert-danger">
+
+            <div class="margin-top">
+                {% if status_message %}
+                    {{ status_message }}
+                {% endif %}
+            </div>
+        </div>
+
+    </div>
+
+
+    </div>
+
+    <style>
+    .center{
+        text-align: center;
+    }
+    .left-margin{
+        margin-left: 100px;
+    }
+    .margin-top{
+        margin-top: 20px;
+    }
+    .extra-margin-top{
+        margin-top: 40px;
+    }
+    .table-features{
+        margin: auto;
+        width: 25%;
+        border: 1px solid lightgrey;
+        color: #83aeb1;
+    }
+    .error-features{
+        width: 50%;
+        margin: auto;
+    }
+    .clear{
+        clear: both;
+    }
+    </style>
+</body>
+</html>
+
