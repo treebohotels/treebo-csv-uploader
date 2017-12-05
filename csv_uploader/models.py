@@ -31,6 +31,9 @@ class CsvJob(TimeStampedModel):
     def item_count(self, status):
             return CsvJobItem.objects.filter(csv_job=self, status=status).count()
 
+    def __unicode__(self):
+        return str(self.created_at)
+
     @classmethod
     def purge(cls, days=2):
         CsvJob.objects.filter(created_at__lt=(datetime.now() - timedelta(days=days))).delete()

@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 
 from django.conf import settings
-
+import logging
 import csv
 
 from models import CsvJobItem, CsvJob
@@ -35,12 +35,18 @@ class CsvHandler:
 
 
     def handle(self, args):
+        logger = logging.getLogger(self.__class__.__name__)
         job_item = CsvJobItem(status='pending', row_values = str(args), csv_job= self.job)
-        if self.handler['async']:
-            if not self.handler['action'](args, job_item.id):
-                job_item.status = "failed"
-        else:
-            job_item.status = 'success' if self.handler['action'](args) else 'failed'
+        job_item.save()
+        try:
+            self.handler['action'](args, job_item.id)
+            if self.handler['async']:
+                job_item.status = 'pending'
+            else:
+                job_item.status = 'success'
+        except Exception as e:
+            logger.error(e)
+            job_item.status = 'failed'
         job_item.save()
 
     def display_message(self):
