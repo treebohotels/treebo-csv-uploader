@@ -1,6 +1,6 @@
 Metadata-Version: 1.1
 Name: treebo-csv-uploader
-Version: 1.0.5
+Version: 1.0.6
 Summary: Generic csv upload with pluggable actions
 Home-page: https://github.com/TreeboHotels/treebo_csv_uploader
 Author: Utkarsh Mishra
