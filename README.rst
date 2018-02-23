@@ -34,11 +34,15 @@ Add the ``treebo-csv-uploader`` applications to your ``INSTALLED_APPS``:
 
 SAMPLE CONFIGURATION:
 
-    CSV_UPLOADER = {"actions": {
-                "invoice_mailer": {
-                    "base_path": 'invoicing.csv_actions'
-                }}
-                }
+    CSV_UPLOADER = [{"actions": {
+                                    "standard_room_price": {
+                                        "base_path": 'b2b.csv_actions'
+                                },
+                                    "extra_person_charge": {
+                                        "base_path": 'b2b.csv_actions'
+                                    }
+                                }
+                    }]
 
 at base path register validators and handlers:
 

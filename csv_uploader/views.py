@@ -1,6 +1,7 @@
 import logging
 
 from django.http import HttpResponse
+from django.utils.datastructures import MultiValueDictKeyError
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -35,6 +36,10 @@ class CsvUploader(APIView):
                                       , action_json=CsvValidator.available_actions_json()),
                             template_name='csv_uploader.html')
 
+        except MultiValueDictKeyError as e:
+            logger.exception("Error in  upload file: %s", e.message)
+            return Response(data={'status_message': 'csv file missing', 'action_names': CsvValidator.available_actions()
+                , 'action_json': CsvValidator.available_actions_json()}, template_name=template_name)
         except Exception as e:
 
             logger.exception("Error in  upload file: %s", e.message)

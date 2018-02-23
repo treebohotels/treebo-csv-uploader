@@ -4,6 +4,8 @@ from datetime import datetime, timedelta
 
 from django.contrib.auth.models import User
 from django.db import models
+from django.conf import settings
+
 from djutil.models import TimeStampedModel
 
 
@@ -21,12 +23,16 @@ class CsvJob(TimeStampedModel):
 
     action_name = models.CharField(max_length=20)
     status = models.CharField(choices=STATUSES, max_length=20)
-    uploaded_by = models.ForeignKey(User)
+    uploaded_by = models.ForeignKey(settings.AUTH_USER_MODEL)
 
     def resync_status(self):
         if self.item_count(CsvJobItem.FailedStatus)==0 and self.item_count(CsvJobItem.PendingStatus)==0:
-            self.status = 'success'
-            self.save()
+            self.status = self.SuccessStatus
+        elif self.item_count(CsvJobItem.PendingStatus)==0:
+            self.status = self.FailedStatus
+        else:
+            self.status = self.PendingStatus
+        self.save()
 
     def item_count(self, status):
             return CsvJobItem.objects.filter(csv_job=self, status=status).count()
