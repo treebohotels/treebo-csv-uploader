@@ -3,7 +3,7 @@ treebo-csv-uploader
 ===================
 
 
-This project provides a generic interface for uploading csv files and registering actions for uploaded values.
+This project provides a generic user interface for uploading csv files and registering actions for uploaded values.
 
 Installation
 ------------
@@ -14,7 +14,7 @@ First add to requirement file:
 
     treebo-csv-uploader
 
-Add the health checker to an URL you want to use:
+Add urls:
 
 .. code:: python
 
@@ -33,7 +33,7 @@ Add the ``treebo-csv-uploader`` applications to your ``INSTALLED_APPS``:
     ]
 
 SAMPLE CONFIGURATION:
-
+.. code:: python
     CSV_UPLOADER = [{"actions": {
                                     "standard_room_price": {
                                         "base_path": 'b2b.csv_actions'
@@ -45,25 +45,27 @@ SAMPLE CONFIGURATION:
                     }]
 
 at base path register validators and handlers:
-
-from integrations.notifications.async_service import AsyncNotificationService
-from csv_uploader.handler import CsvHandlerRegisty
-
-
-@CsvHandlerRegisty.async_handler('INVOICE_MAILER')
-def handle_invoice_mailer(invoice, job_id):
-    AsyncNotificationService.mail_invoices([invoice['INVOICE_ID']], job_id)
-    return True
+handlers.py:
+.. code:: python
+    from integrations.notifications.async_service import AsyncNotificationService
+    from csv_uploader.handler import CsvHandlerRegisty
 
 
-from csv_uploader.validator import CsvValidatorRegistry
+    @CsvHandlerRegisty.async_handler('INVOICE_MAILER')
+    def handle_invoice_mailer(invoice, job_id):
+        AsyncNotificationService.mail_invoices([invoice['INVOICE_ID']], job_id)
+        return True
+
+validators.py
+.. code:: python
+    from csv_uploader.validator import CsvValidatorRegistry
 
 
-@CsvValidatorRegistry.header_validator('INVOICE_MAILER', ['INVOICE_ID'])
-def validate_invoice_mailer_header(user, header):
-    return header==['INVOICE_ID']
+    @CsvValidatorRegistry.header_validator('INVOICE_MAILER', ['INVOICE_ID'])    
+    def validate_invoice_mailer_header(user, header):
+        return header==['INVOICE_ID']
 
 
-@CsvValidatorRegistry.row_validator('INVOICE_MAILER')
-def validate_invoice_mailer_row(user, args):
-    return True
+    @CsvValidatorRegistry.row_validator('INVOICE_MAILER')
+    def validate_invoice_mailer_row(user, args):
+        return True
