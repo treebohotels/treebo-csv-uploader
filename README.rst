@@ -35,11 +35,11 @@ Add the ``treebo-csv-uploader`` applications to your ``INSTALLED_APPS``:
 SAMPLE CONFIGURATION:
 .. code:: python
     CSV_UPLOADER = [{"actions": {
-                                    "standard_room_price": {
-                                        "base_path": 'b2b.csv_actions'
+                                    "<action1>": {
+                                        "base_path": '<path.of.validators>'
                                 },
-                                    "extra_person_charge": {
-                                        "base_path": 'b2b.csv_actions'
+                                    "action1": {
+                                        "base_path": 'path.of.validators'
                                     }
                                 }
                     }]
@@ -53,17 +53,17 @@ handlers.py:
 
     @CsvHandlerRegisty.async_handler('INVOICE_MAILER')
     def handle_invoice_mailer(invoice, job_id):
-        AsyncNotificationService.mail_invoices([invoice['INVOICE_ID']], job_id)
-        return True
+     AsyncNotificationService.mail_invoices([invoice['INVOICE_ID']], job_id)
+     return True
 
-validators.py
+validators.py:
 .. code:: python
     from csv_uploader.validator import CsvValidatorRegistry
 
 
     @CsvValidatorRegistry.header_validator('INVOICE_MAILER', ['INVOICE_ID'])    
     def validate_invoice_mailer_header(user, header):
-        return header==['INVOICE_ID']
+     return header==['INVOICE_ID']
 
 
     @CsvValidatorRegistry.row_validator('INVOICE_MAILER')
