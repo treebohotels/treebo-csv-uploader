@@ -33,7 +33,9 @@ Add the ``treebo-csv-uploader`` applications to your ``INSTALLED_APPS``:
     ]
 
 SAMPLE CONFIGURATION:
+
 .. code:: python
+
     CSV_UPLOADER = [{"actions": {
                                     "<action1>": {
                                         "base_path": '<path.of.validators>'
@@ -46,7 +48,9 @@ SAMPLE CONFIGURATION:
 
 at base path register validators and handlers:
 handlers.py:
+
 .. code:: python
+
     from integrations.notifications.async_service import AsyncNotificationService
     from csv_uploader.handler import CsvHandlerRegisty
 
@@ -57,7 +61,9 @@ handlers.py:
      return True
 
 validators.py:
+
 .. code:: python
+
     from csv_uploader.validator import CsvValidatorRegistry
 
 
