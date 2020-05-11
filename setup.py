@@ -3,7 +3,7 @@ import os
 
 from setuptools import find_packages, setup
 
-VERSION = (1, 0, 8)
+VERSION = (1, 0, 11)
 
 __version__ = ".".join(str(i) for i in VERSION)
 
@@ -31,10 +31,7 @@ setup(
     long_description=read('README.rst'),
     classifiers=[
         'Development Status :: 5 - Production/Stable',
-        'Framework :: Django',
-        'Framework :: Django :: 1.8',
-        'Framework :: Django :: 1.9',
-        'Framework :: Django :: 1.10',
+        'Framework :: Django :: 1.10+',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: MIT License',
         'License :: Public Domain',
