@@ -1,17 +1,20 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
+import codecs
+import csv
+import logging
 
 from django.conf import settings
-import logging
-import csv
 
-from models import CsvJobItem, CsvJob
-from validator import CsvValidator
+from .models import CsvJobItem, CsvJob
+from .validator import CsvValidator
+
+logger = logging.getLogger(__name__)
+
 
 class CsvHandler:
 
     def __init__(self, action_name, file):
-        for action, conf in settings.CSV_UPLOADER[0]['actions'].items():
+        for action, conf in list(settings.CSV_UPLOADER[0]['actions'].items()):
             __import__(conf['base_path'])
         self.action, self.file = action_name, file
         self.statuses = []
@@ -20,7 +23,7 @@ class CsvHandler:
         self.validator = CsvValidator(action_name)
 
     def process(self, current_user):
-        reader = csv.DictReader(self.file)
+        reader = csv.DictReader(codecs.iterdecode(self.file, 'utf-8'))
         if not self.validator.validate_header(current_user, reader.fieldnames):
             raise Exception("Invalid header")
 
@@ -33,14 +36,12 @@ class CsvHandler:
                 self.handle(row)
         self.job.resync_status()
 
-
     def handle(self, args):
-        logger = logging.getLogger(self.__class__.__name__)
-        job_item = CsvJobItem(status='pending', row_values = str(args), csv_job= self.job)
+        job_item = CsvJobItem(status='pending', row_values=str(args), csv_job=self.job)
         job_item.save()
         try:
             self.handler['action'](args, job_item.id)
-            if self.handler['async']:
+            if self.handler['async_handler']:
                 job_item.status = 'pending'
             else:
                 job_item.status = 'success'
@@ -50,8 +51,7 @@ class CsvHandler:
         job_item.save()
 
     def display_message(self):
-        return "Success: "+ str(self.job.item_count('success')) + "  Pending " + str(self.job.item_count('pending'))
-
+        return "Success: " + str(self.job.item_count('success')) + "  Pending " + str(self.job.item_count('pending'))
 
     @classmethod
     def callback(cls, job_item_id, status, message):
@@ -68,8 +68,7 @@ class CsvHandler:
 
 
 class CsvHandlerRegisty:
-
-    HANDLERS={}
+    HANDLERS = {}
 
     @classmethod
     def sync_handler(cls, action_name):
@@ -78,11 +77,13 @@ class CsvHandlerRegisty:
         :param handler_func: decorated function
         :return: none
         """
+
         def decorator(handler_function):
-            cls.HANDLERS[action_name] = dict(action=handler_function, async=False)
+            cls.HANDLERS[action_name] = dict(action=handler_function, async_handler=False)
 
             def register_csv_handler(*args):
                 return register_csv_handler
+
         return decorator
 
     @classmethod
@@ -92,8 +93,11 @@ class CsvHandlerRegisty:
         :param handler_func: decorated function
         :return: none
         """
+
         def decorator(handler_function):
-            cls.HANDLERS[action_name] = dict(action=handler_function, async=True)
+            cls.HANDLERS[action_name] = dict(action=handler_function, async_handler=True)
+
             def register_csv_handler(*args):
                 return register_csv_handler
+
         return decorator

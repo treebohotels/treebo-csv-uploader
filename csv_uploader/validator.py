@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
 from django.conf import settings
 
 import json
@@ -26,13 +24,13 @@ class CsvValidator:
 
     @classmethod
     def import_validators(cls):
-        for action, conf in settings.CSV_UPLOADER[0]['actions'].items():
+        for action, conf in list(settings.CSV_UPLOADER[0]['actions'].items()):
             __import__(conf['base_path'])
 
     @classmethod
     def available_actions_json(cls):
         data = {}
-        for action, detail in CsvValidatorRegistry.HEADER_VALIDATORS.items():
+        for action, detail in list(CsvValidatorRegistry.HEADER_VALIDATORS.items()):
             data[action] = detail['header']
         return json.dumps(data)
 

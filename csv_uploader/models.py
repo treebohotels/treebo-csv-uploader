@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
 from datetime import datetime, timedelta
 
-from django.contrib.auth.models import User
 from django.db import models
 from django.conf import settings
 
@@ -37,7 +35,7 @@ class CsvJob(TimeStampedModel):
     def item_count(self, status):
             return CsvJobItem.objects.filter(csv_job=self, status=status).count()
 
-    def __unicode__(self):
+    def __str__(self):
         return str(self.created_at)
 
     @classmethod
