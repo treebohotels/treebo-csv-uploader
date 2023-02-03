@@ -3,7 +3,7 @@ treebo-csv-uploader
 ===================
 
 
-This project provides a generic user interface for uploading csv files and registering actions for uploaded values.
+This project provides a generic user interface for uploading csv files and registering actions for uploaded values...
 
 Installation
 ------------
