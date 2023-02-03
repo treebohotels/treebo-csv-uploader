@@ -29,6 +29,8 @@ class CsvUploader(APIView):
         if not request.user.is_authenticated():
             return HttpResponse("Access Denied..", content_type='text/plain')
         try:
+            if not (request.FILES['csv_file'].name.endswith('.csv')):
+                raise Exception("File type not matched. Please ensure to upload only CSV files")
             handler = CsvHandler(str(request.POST['action_name']), request.FILES['csv_file'])
             handler.process(request.user)
 
