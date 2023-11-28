@@ -21,7 +21,7 @@ class CsvJob(TimeStampedModel):
 
     action_name = models.CharField(max_length=20)
     status = models.CharField(choices=STATUSES, max_length=20)
-    uploaded_by = models.ForeignKey(settings.AUTH_USER_MODEL)
+    uploaded_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
     def resync_status(self):
         if self.item_count(CsvJobItem.FailedStatus)==0 and self.item_count(CsvJobItem.PendingStatus)==0:
@@ -54,7 +54,7 @@ class CsvJobItem(models.Model):
         (PendingStatus, 'pending')
     )
 
-    csv_job = models.ForeignKey(CsvJob, related_name="csv_jobs")
+    csv_job = models.ForeignKey(CsvJob, related_name="csv_jobs", on_delete=models.CASCADE)
     row_values = models.TextField()
     status = models.CharField(choices=STATUSES, max_length=20)
     message = models.CharField(max_length=200, null=True)
