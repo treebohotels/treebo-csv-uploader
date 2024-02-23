@@ -18,7 +18,7 @@ class CsvUploader(APIView):
     renderer_classes = (TemplateHTMLRenderer,)
 
     def get(self, request, *args, **kwargs):
-        if not request.user.is_authenticated():
+        if not request.user.is_authenticated:
             return HttpResponse("Access Denied..", content_type='text/plain')
         return Response(data=dict(action_names= CsvValidator.available_actions()
                                   , action_json=CsvValidator.available_actions_json())
@@ -26,7 +26,7 @@ class CsvUploader(APIView):
 
     def post(self, request, *args, **kwargs):
         template_name = 'csv_uploader.html'
-        if not request.user.is_authenticated():
+        if not request.user.is_authenticated:
             return HttpResponse("Access Denied..", content_type='text/plain')
         try:
             handler = CsvHandler(str(request.POST['action_name']), request.FILES['csv_file'])
